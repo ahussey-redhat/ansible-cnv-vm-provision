@@ -1,0 +1,11 @@
+---
+- name: configure project's namespace
+  kubernetes.core.k8s:
+    state: present
+    resource_definition:
+      kind: ProjectRequest
+      apiVersion: project.openshift.io/v1
+      description: "{{ vm_project | upper }} project"
+      displayName: "{{ vm_project | upper }}"
+      metadata:
+        name: "{{ vm_project }}"

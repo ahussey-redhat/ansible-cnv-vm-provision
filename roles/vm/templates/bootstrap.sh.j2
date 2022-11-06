@@ -1,0 +1,16 @@
+#!/bin/bash
+{{ ansible_managed | comment }}
+
+hostnamectl set-hostname {{ item.name }}.{{ vm_domain }}
+{% if vm_satellite_capsule is defined %}
+yum install -y \
+  http://{{ vm_satellite_capsule }}/pub/katello-ca-consumer-latest.noarch.rpm
+subscription-manager clean
+subscription-manager register --org=DIG --activationkey={{ item.activation_key }}
+{% endif %}
+yum clean all
+yum install cockpit -y
+systemctl enable --now cockpit.socket
+systemctl enable --now sshd
+yum install -y yum-utils vim bash-completion
+yum update -y

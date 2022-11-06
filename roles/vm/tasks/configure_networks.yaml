@@ -1,0 +1,56 @@
+- name: configure VM networks
+  kubernetes.core.k8s:
+    state: present
+    resource_definition:
+      apiVersion: nmstate.io/v1beta1
+      kind: NodeNetworkConfigurationPolicy
+      metadata:
+        name: "policy-vlan{{ item }}"
+      spec:
+        desiredState:
+          interfaces:
+            - name: "bond0.{{ item }}"
+              type: vlan
+              state: up
+              ipv4:
+                enabled: false
+              ipv6:
+                enabled: false
+              vlan:
+                base-iface: bond0
+                id: "{{ item }}"
+            - name: "br{{ item }}"
+              type: linux-bridge
+              state: up
+              ipv4:
+                enabled: false
+              ipv6:
+                enabled: false
+              bridge:
+                options:
+                  stp:
+                    enabled: false
+                port:
+                  - name: "bond0.{{ item }}"
+  loop: "{{ vlans }}"
+
+- name: create fact for each network attachment definition
+  ansible.builtin.set_fact:
+    networkattachmentdef: "{\"name\":\"vlan{{ item }}\",\"cniVersion\":\"0.3.1\",\"plugins\":[{\"type\":\"cnv-bridge\",\"bridge\":\"br{{ item }}\",\"ipam\":{}},{\"type\":\"cnv-tuning\"}]}"
+  loop: "{{ vlans }}"
+  register: networkattachmentdeflist
+
+- name: configure base network attachment definitions
+  kubernetes.core.k8s:
+    state: present
+    resource_definition:
+      apiVersion: k8s.cni.cncf.io/v1
+      kind: NetworkAttachmentDefinition
+      metadata:
+        annotations:
+          k8s.v1.cni.cncf.io/resourceName: "bridge.network.kubevirt.io/br{{ item.item }}"
+        name: "vlan{{ item.item }}"
+        namespace: "{{ vm_project }}"
+      spec:
+        config: "{{ item.ansible_facts.networkattachmentdef | to_json | string }}"
+  loop: "{{ networkattachmentdeflist.results }}"

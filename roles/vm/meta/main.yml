@@ -1,0 +1,17 @@
+galaxy_info:
+  author: Alex Hussey <ahussey@redhat.com>
+  description: Deploy and maintain virtual machines on an OpenShift Virtualization cluster
+  company: Red Hat
+
+  license: GPL-2.0-or-later
+
+  min_ansible_version: 2.9
+
+  platforms:
+  - name: RedHat
+    versions:
+    - 7
+    - 8
+
+  galaxy_tags:
+    - cnv

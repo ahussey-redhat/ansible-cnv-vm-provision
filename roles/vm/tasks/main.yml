@@ -1,0 +1,12 @@
+---
+# Pre-requisits before a VM can be deployed
+- import_tasks: configure_namespaces.yaml
+- import_tasks: configure_sshkeys.yaml
+- import_tasks: configure_networks.yaml
+- ansible.builtin.fail:
+    msg: virtual_machines is not defined!
+  when: virtual_machines is not defined
+- import_tasks: update_dns_dhcp.yaml
+  when: vm_update_dns
+# Configure and deploy the VM(s)
+- import_tasks: deploy_vm.yaml

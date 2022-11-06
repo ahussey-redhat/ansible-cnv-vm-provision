@@ -1,0 +1,122 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: {{ item.name }}
+  namespace: {{ vm_project }}
+  labels:
+    app: {{ item.name }}
+    flavor.template.kubevirt.io/large: 'true'
+    os.template.kubevirt.io/rhel8.4: 'true'
+    vm.kubevirt.io/template: rhel8-server-large
+    vm.kubevirt.io/template.namespace: openshift
+    vm.kubevirt.io/template.revision: '1'
+    vm.kubevirt.io/template.version: v0.15.1
+    workload.template.kubevirt.io/server: 'true'
+spec:
+  dataVolumeTemplates:
+    - apiVersion: cdi.kubevirt.io/v1beta1
+      kind: DataVolume
+      metadata:
+        name: {{ item.name }}
+      spec:
+        pvc:
+          accessModes:
+            - ReadWriteMany
+          resources:
+            requests:
+              storage: {{ item.disk_size | default('20') }}Gi
+          storageClassName: ocs-storagecluster-ceph-rbd
+          volumeMode: Block
+        source:
+          http:
+            url: {{ item.image }}
+            certConfigMap: custom-ca
+  running: true
+  template:
+    metadata:
+      annotations:
+        vm.kubevirt.io/flavor: large
+        vm.kubevirt.io/os: rhel8
+        vm.kubevirt.io/workload: server
+      labels:
+        flavor.template.kubevirt.io/large: 'true'
+        kubevirt.io/domain: {{ item.name }}
+        kubevirt.io/size: large
+        os.template.kubevirt.io/rhel8.4: 'true'
+        vm.kubevirt.io/name: {{ item.name }}
+        workload.template.kubevirt.io/server: 'true'
+    spec:
+      accessCredentials:
+        - sshPublicKey:
+            propagationMethod:
+              configDrive: {}
+            source:
+              secret:
+                secretName: authorizedsshkeys-{{ ansible_user_id }}
+      domain:
+        cpu:
+          cores: {{ item.cpu }}
+          sockets: 1
+          threads: 1
+        devices:
+          disks:
+            - bootOrder: 1
+              disk:
+                bus: virtio
+              name: {{ item.name }}
+            - disk:
+                bus: virtio
+              name: cloudinitdisk
+          interfaces:
+{% if item.networks is defined %}
+{% for interface in item.networks %}
+{% if interface.type == "bridge" %}
+            - bridge: {}
+              model: virtio
+              macAddress: {{ interface.mac|default('52:54:00' | community.general.random_mac(seed=item.name + (interface.source_vlan  | string) )) }}
+              name: nic{{ interface.source_vlan | string }}
+{% endif %}
+{% endfor %}
+{% endif %}
+          networkInterfaceMultiqueue: true
+          rng: {}
+        resources:
+          requests:
+            memory: {{ item.memory }}Mi
+      evictionStrategy: LiveMigrate
+      hostname: {{ item.name }}
+      networks:
+{% if item.networks is defined %}
+{% for interface in item.networks %}
+{% if interface.type == "bridge" %}
+        - multus:
+            networkName: vlan{{ interface.source_vlan | string }}
+          name: nic{{ interface.source_vlan | string }}
+{% endif %}
+{% endfor %}
+{% endif %}
+      terminationGracePeriodSeconds: 180
+      volumes:
+        - dataVolume:
+            name: {{ item.name }}
+          name: {{ item.name }}
+        - cloudInitConfigDrive:
+            userData: |-
+              #cloud-config
+              ssh_pwauth: True
+              disable_root: False
+              chpasswd:
+                list: |
+                expire: false
+                root: {{ vm_root_password | string | password_hash('sha512', 'password123') }}
+              write_files:
+                - encoding: b64
+                  content: {{ lookup('template', 'bootstrap.sh.j2') | b64encode }}
+                  path: /var/tmp/bootstrap.sh
+                  owner: 'root:root'
+                  permissions: '0770'
+              runcmd:
+                - [sh, -c, /var/tmp/bootstrap.sh]
+                - sed -i -e 's/without-password/yes/' /etc/ssh/sshd_config
+                - systemctl restart sshd
+          name: cloudinitdisk

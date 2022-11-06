@@ -1,0 +1,12 @@
+---
+- name: Configure SSH keys
+  kubernetes.core.k8s:
+    state: present
+    resource_definition:
+      kind: Secret
+      apiVersion: v1
+      metadata:
+        name: "authorizedsshkeys-{{ ansible_user_id }}"
+        namespace: "{{ vm_project }}"
+      data:
+        key: "{{ vm_ssh_pubkey | b64encode }}"
