@@ -5,13 +5,7 @@ galaxy_info:
 
   license: GPL-2.0-or-later
 
-  min_ansible_version: 2.9
-
-  platforms:
-  - name: RedHat
-    versions:
-    - 7
-    - 8
+  min_ansible_version: 2.00
 
   galaxy_tags:
     - cnv

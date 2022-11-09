@@ -37,14 +37,13 @@ vm_spec:
   networks:
     - type: bridge
       source_vlan: 10
-  enable_puppet: false
 ```
 
 Dependencies
 ------------
 ```yaml
 roles:
-  - name: linux-system-roles.network
+  - name: rhel-system-roles.network # or linux-system-roles.network
 collections:
   - name: kubernetes.core
   - name: community.general
@@ -55,15 +54,15 @@ Example Playbook
 
 ```yaml
 ---
-- name: Deploy build/test VMS
+- name: Deploy the VM(s)
   import_playbook: community.cnv.vm_deploy
 
-- name: Ensure VMs are available
-  hosts: test-vm
+- name: Ensure the VM(s) are available
+  hosts: all
   gather_facts: no
   remote_user: root
   tasks:
-    - name: Ensure VM is online
+    - name: Ensure VM(s) are online
       ansible.builtin.wait_for_connection:
         timeout: 600
         sleep: 10
