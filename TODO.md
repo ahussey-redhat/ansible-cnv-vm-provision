@@ -4,3 +4,4 @@
 - [ ] Make documentation more comprehensive
 - [ ] Provide example playbook
 - [ ] Create asciinema demo
+- [ ] Add ability to specify cached/local images or templates, rather than having to download the full image everytime
