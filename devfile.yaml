@@ -17,7 +17,8 @@ projects:
         revision: develop
       remotes:
         origin: 'https://github.com/ahussey-redhat/ansible-cnv-vm-provision.git'
-    name: ansible-cnv-vm-provision
+    name: cnv
+    clonePath: ansible_collections/community/cnv
 components:
   - container:
       env:
@@ -28,11 +29,11 @@ components:
         - name: CHE_PLUGIN_REGISTRY_INTERNAL_URL
           value: 'http://plugin-registry.crw.svc:8080/v3'
       image: 'quay.io/devfile/universal-developer-image:ubi8-38da5c2'
-      sourceMapping: /projects
+      sourceMapping: /projects/ansible_collections/community/cnv
     name: udi-container
   - container:
       image: 'registry.redhat.io/ansible-automation-platform-21/ee-supported-rhel8'
-      sourceMapping: /projects
+      sourceMapping: /projects/ansible_collections/community/cnv
       command:
         - sleep
         - infinity
@@ -44,5 +45,5 @@ commands:
       group:
         kind: test
       label: Run all Ansible tests
-      workingDir: /projects/ansible-cnv-vm-provision
-    id: ansible-test 
+      workingDir: /projects/ansible_collections/community/cnv
+    id: ansible-test
