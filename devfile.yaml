@@ -33,6 +33,9 @@ components:
   - container:
       image: 'registry.redhat.io/ansible-automation-platform-21/ee-supported-rhel8'
       sourceMapping: /projects
+      command:
+        - sleep
+        - infinity
     name: ansible-container
 commands:
   - exec:
