@@ -29,4 +29,17 @@ components:
           value: 'http://plugin-registry.crw.svc:8080/v3'
       image: 'quay.io/devfile/universal-developer-image:ubi8-38da5c2'
       sourceMapping: /projects
-    name: universal-developer-image
+    name: udi-container
+  - container:
+      image: 'registry.redhat.io/ansible-automation-platform-21/ee-supported-rhel8'
+      sourceMapping: /projects
+    name: ansible-container
+commands:
+  - exec:
+      commandLine: ansible-test sanity --docker default -v
+      component: ansible-container
+      group:
+        kind: test
+      label: Run all Ansible tests
+      workingDir: /projects/ansible-cnv-vm-provision
+    id: ansible-test 
