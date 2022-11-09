@@ -39,7 +39,7 @@ components:
     name: ansible-container
 commands:
   - exec:
-      commandLine: ansible-test sanity --docker default -v
+      commandLine: ansible-test sanity --venv -v
       component: ansible-container
       group:
         kind: test

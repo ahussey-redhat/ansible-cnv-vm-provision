@@ -6,7 +6,7 @@
         {
             "type": "che",
             "label": "ansible-test",
-            "command": "ansible-test sanity --docker default -v",
+            "command": "ansible-test sanity --venv -v",
             "target": {
                 "workingDir": "/projects/ansible-cnv-vm-provision",
                 "component": "ansible-container"
