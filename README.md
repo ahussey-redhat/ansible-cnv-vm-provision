@@ -17,3 +17,13 @@ Documentation for each role and playbook can be found in their respective subdir
 ** Technical Preview - Still Under Development **
 To cleanup a VM you can run the `cleanup_vm.sh` script located in `~/.ansible/collections/ansible_collections/community/cnv/supporting_files/cleanup_vm.sh`
 It takes the short hostname of the VM(s) as an argument. IE `cleanup_vm.sh virtualmachine1 virtualmachine2`
+
+## Contributing
+
+[Contributing Guide](CONTRIBUTING.md)
+
+## Collection Maintenance
+
+[Maintainer's Guide](https://docs.ansible.com/ansible/devel/community/maintainers.html)
+
+[Commiter's Guidelines](https://docs.ansible.com/ansible/devel/community/committer_guidelines.html)
