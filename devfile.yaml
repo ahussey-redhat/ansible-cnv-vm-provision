@@ -16,7 +16,7 @@ projects:
       checkoutFrom:
         revision: develop
       remotes:
-        origin: 'https://github.com/ahussey-redhat/ansible-cnv-vm-provision.git'
+        origin: 'git@github.com:ahussey-redhat/ansible-cnv-vm-provision.git'
     name: cnv
     clonePath: ansible_collections/community/cnv
 components:
