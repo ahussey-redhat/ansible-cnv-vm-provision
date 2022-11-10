@@ -21,7 +21,7 @@ projects:
     clonePath: ansible_collections/community/cnv
 components:
   - container:
-      image: 'registry.redhat.io/ansible-automation-platform-21/ee-supported-rhel8'
+      image: 'registry.redhat.io/ansible-automation-platform-21/ee-minimal-rhel8' # https://issues.redhat.com/browse/AAP-7037
       sourceMapping: /projects/ansible_collections/community/cnv
       command:
         - sleep
