@@ -17,9 +17,10 @@ Role Variables
 | Variable | Default | Required | Description |
 | --- | --- | --- | --- |
 | vm_ssh_pubkey | lookup ~/.ssh/id_rsa.pub | yes | User's SSH public key to be injected into virtual machine image |
-| vm_domain | example.com | yes | Virtual Machine's domain |
+| vm_domain | local | no | Virtual Machine's domain |
 | vm_project | N/A | yes | OpenShift project/namespace to deploy the VM |
 | vm_satellite_capsule | N/A | no | Satellite capsule for the VMs |
+| vm_satellite_org | N/A | no | Organization to register to |
 | vm_root_password | password | yes | Initial root password |
 | vm_update_dns | false | yes | Whether to interact with Infoblox to add/modify host records |
 | vm_spec | N/A | no | a virtual machine specification hash |

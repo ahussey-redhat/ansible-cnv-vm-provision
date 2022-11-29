@@ -21,7 +21,18 @@ projects:
     clonePath: ansible_collections/community/cnv
 components:
   - container:
-      image: 'registry.redhat.io/ansible-automation-platform-21/ee-minimal-rhel8' # https://issues.redhat.com/browse/AAP-7037
+      env:
+        - name: CHE_DASHBOARD_URL
+          value: 'https://devspaces.apps.sandbox-m2.ll9k.p1.openshiftapps.com'
+        - name: CHE_PLUGIN_REGISTRY_URL
+          value: 'https://devspaces.apps.sandbox-m2.ll9k.p1.openshiftapps.com/plugin-registry/v3'
+        - name: CHE_PLUGIN_REGISTRY_INTERNAL_URL
+          value: 'http://plugin-registry.crw.svc:8080/v3'
+      image: 'quay.io/devfile/universal-developer-image:ubi8-38da5c2'
+      sourceMapping: /projects/ansible_collections/community/cnv
+    name: udi-container
+  - container:
+      image: 'registry.redhat.io/ansible-automation-platform-22/ee-minimal-rhel8'
       sourceMapping: /projects/ansible_collections/community/cnv
       command:
         - sleep

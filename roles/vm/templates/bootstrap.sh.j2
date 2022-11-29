@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 {{ ansible_managed | comment }}
 
 hostnamectl set-hostname {{ item.name }}.{{ vm_domain }}
@@ -6,7 +6,7 @@ hostnamectl set-hostname {{ item.name }}.{{ vm_domain }}
 yum install -y \
   http://{{ vm_satellite_capsule }}/pub/katello-ca-consumer-latest.noarch.rpm
 subscription-manager clean
-subscription-manager register --org=DIG --activationkey={{ item.activation_key }}
+subscription-manager register --org={{ vm_satellite_org }} --activationkey={{ item.activation_key }}
 {% endif %}
 yum clean all
 yum install cockpit -y

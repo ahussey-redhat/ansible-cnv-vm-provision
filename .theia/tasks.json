@@ -6,9 +6,9 @@
         {
             "type": "che",
             "label": "ansible-test",
-            "command": "ansible-test sanity --venv -v",
+            "command": "ansible-test sanity --venv -v ansible_collections/community/cnv/ --exclude ansible_collections/community/cnv/.git/",
             "target": {
-                "workingDir": "/projects/ansible-cnv-vm-provision",
+                "workingDir": "/projects/ansible_collections/community/cnv",
                 "component": "ansible-container"
             },
             "problemMatcher": [],
