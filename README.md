@@ -1,6 +1,6 @@
 # Ansible Collection - community.cnv
 
-[![Contribute](https://www.eclipse.org/che/contribute.svg)](https://devspaces.apps.sandbox-m2.ll9k.p1.openshiftapps.com#https://github.com/ahussey-redhat/ansible-cnv-vm-provision)
+[![Contribute](https://www.eclipse.org/che/contribute.svg)](https://devspaces.apps.sandbox-m2.ll9k.p1.openshiftapps.com#https://github.com/ahussey-redhat/ansible-cnv-vm-provision?che-editor=che-incubator/che-code/insiders)
 
 **Used to provision Virtual Machines on OpenShift Clusters.**
 
