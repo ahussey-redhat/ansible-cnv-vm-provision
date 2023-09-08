@@ -1,0 +1,35 @@
+- name: Configure infoblox-client
+  ansible.builtin.pip:
+    name: infoblox-client
+
+- name: Configure DNS and DHCP
+  infoblox.nios_modules.nios_host_record:
+    name: "{{ item.name }}.{{ vm_domain }}"
+    ipv4:
+      - address: "{{ item.primary_ip | mandatory }}"
+        mac: "{{ item.primary_mac | default('52:54:00' | community.general.random_mac(seed=item.name + item.networks.0.source_vlan)) }}"
+        dhcp: true
+    provider: "{{ nios_provider }}"
+  loop: "{{ virtual_machines }}"
+  when: vm_domain is search("dev.bm.org")
+
+- name: Get InfoBlox Grid ID
+  uri:
+    url: https://infoblox.example.com/wapi/v2.5/grid
+    user: "{{ nios_username }}"
+    password: "{{ nios_password }}"
+    method: GET
+    validate_certs: no
+  register: infoblox_grid
+
+- name: Restart InfoBlox DHCP services if required
+  uri:
+    url: "https://infoblox.example.com/wapi/v2.5/{{ infoblox_grid['json'][0]['_ref'] }}?_function=restartservices"
+    user: "{{ nios_username }}"
+    password: "{{ nios_password }}"
+    method: POST
+    body: '{"restart_option": "RESTART_IF_NEEDED"}'
+    body_format: json
+    headers:
+      Content-Type: "application/json"
+    validate_certs: no
