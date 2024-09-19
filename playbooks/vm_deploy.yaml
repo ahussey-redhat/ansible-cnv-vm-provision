@@ -1,0 +1,30 @@
+---
+- name: Deploy development Virtual Machine to OpenShift Cluster
+  hosts: localhost
+  become: no
+  gather_facts: yes
+  serial:
+   - 1
+   - 5
+  vars_prompt:
+    - name: nios_username
+      prompt: "Infoblox username [leave blank if you are not updating DNS]"
+      private: no
+    - name: nios_password
+      prompt: "Infoblox password [leave blank if you are not updating DNS]"
+  vars:
+    nios_provider:
+      host: infoblox.example.com
+      username: "{{ nios_username }}"
+      password: "{{ nios_password }}"
+
+  pre_tasks:
+    - name: Aggregate vm specifications
+      set_fact:
+        virtual_machines: "{{ virtual_machines|default([]) + [vm_entry] }}"
+      vars:
+        vm_entry: "{{ hostvars[item]['vm_spec'] }}"
+      loop: "{{ groups['virtual_machines'] }}"
+
+  roles:
+    - role: community.cnv.vm

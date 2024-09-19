@@ -1,0 +1,13 @@
+- name: Configure virtual machine templates
+  template:
+    src: virtualmachine.yml.j2
+    dest: "/tmp/{{ item.name }}.yml"
+  loop: "{{ virtual_machines }}"
+  no_log: yes
+
+- name: Deploy virtual machine
+  kubernetes.core.k8s:
+    state: present
+    src: "/tmp/{{ item.name }}.yml"
+  loop: "{{ virtual_machines }}"
+  no_log: yes

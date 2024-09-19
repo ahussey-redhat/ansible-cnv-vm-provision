@@ -1,0 +1,21 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=733558
+	// for the documentation about the tasks.json format
+	"version": "2.0.0",
+	"tasks": [
+        {
+            "type": "che",
+            "label": "ansible-test",
+            "command": "ansible-test sanity --venv -v ansible_collections/community/cnv/ --exclude ansible_collections/community/cnv/.git/",
+            "target": {
+                "workingDir": "/projects/ansible_collections/community/cnv",
+                "component": "ansible-container"
+            },
+            "problemMatcher": [],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        }
+	]
+}
